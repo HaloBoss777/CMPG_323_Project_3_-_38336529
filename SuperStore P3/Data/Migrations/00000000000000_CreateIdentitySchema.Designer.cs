@@ -9,7 +9,7 @@ using Data;
 
 namespace EcoPower_Logistics.Data.Migrations
 {
-    [DbContext(typeof(ApplicationDbContext))]
+    [DbContext(typeof(SuperStoreContext))]
     [Migration("00000000000000_CreateIdentitySchema")]
     partial class CreateIdentitySchema
     {

@@ -7,11 +7,11 @@ namespace Models
     public partial class OrderDetail
     {
         [DisplayName("Order Details ID")]
-        public int OrderDetailsId { get; set; }
+        public short OrderDetailsId { get; set; }
         [DisplayName("Order ID")]
-        public int OrderId { get; set; }
+        public short OrderId { get; set; }
         [DisplayName("Product ID")]
-        public int ProductId { get; set; }
+        public short ProductId { get; set; }
         [DisplayName("Quantity")]
         public int Quantity { get; set; }
         [DisplayName("Discount")]

@@ -12,7 +12,7 @@ namespace Models
         }
 
         [DisplayName("Product ID")]
-        public int ProductId { get; set; }
+        public short ProductId { get; set; }
         [DisplayName("Product Name")]
         public string ProductName { get; set; } = null!;
         [DisplayName("Product Description")]
