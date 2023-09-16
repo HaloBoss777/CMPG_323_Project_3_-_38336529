@@ -33,7 +33,7 @@ namespace Controllers
         {
             var customer = await _customerService.findCustomerAsync(id);
 
-            if (customer == null)
+            if (customer is null)
             {
                 return NotFound();
             }
@@ -68,7 +68,7 @@ namespace Controllers
 
             var customer = await _customerService.findCustomerAsync(id);
 
-            if (customer == null)
+            if (customer is null)
             {
                 return NotFound();
             }
@@ -105,7 +105,7 @@ namespace Controllers
         {
             var customer = await _customerService.findCustomerAsync(id);
 
-            if (customer == null)
+            if (customer is null)
             {
                 return NotFound();
             }
@@ -120,7 +120,7 @@ namespace Controllers
         {
             var customer = await _customerService.findCustomerAsync(id);
 
-            if (customer != null)
+            if (customer is not null)
             {
                 await _customerService.DeleteCustomer(id);
             }
@@ -128,9 +128,11 @@ namespace Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        private bool CustomerExists(short id)
+        private async Task<bool> CustomerExists(short id)
         {
-            if(_customerService.findCustomerAsync(id) is null)
+            var foundRecord = await _customerService.findCustomerAsync(id);
+
+            if (foundRecord is null)
             {
                 return false;
             }

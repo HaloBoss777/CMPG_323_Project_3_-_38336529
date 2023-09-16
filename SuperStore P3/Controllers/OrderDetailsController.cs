@@ -30,18 +30,12 @@ namespace Controllers
         }
 
         // GET: OrderDetails/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details(short? id)
         {
-            if (id == null || _context.OrderDetails == null)
-            {
-                return NotFound();
-            }
 
-            var orderDetail = await _context.OrderDetails
-                .Include(o => o.Order)
-                .Include(o => o.Product)
-                .FirstOrDefaultAsync(m => m.OrderDetailsId == id);
-            if (orderDetail == null)
+            var orderDetail = await _orderDetailService.findOrderDetailsAsync(id);
+
+            if (orderDetail is null)
             {
                 return NotFound();
             }
@@ -66,8 +60,7 @@ namespace Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(orderDetail);
-                await _context.SaveChangesAsync();
+                await _orderDetailService.CreateOrderDetailAsync(orderDetail);
                 return RedirectToAction(nameof(Index));
             }
             ViewData["OrderId"] = new SelectList(_context.Orders, "OrderId", "OrderId", orderDetail.OrderId);
@@ -76,15 +69,10 @@ namespace Controllers
         }
 
         // GET: OrderDetails/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null || _context.OrderDetails == null)
-            {
-                return NotFound();
-            }
-
-            var orderDetail = await _context.OrderDetails.FindAsync(id);
-            if (orderDetail == null)
+        public async Task<IActionResult> Edit(short? id)
+        { 
+            var orderDetail = await _orderDetailService.findOrderDetailsAsync(id);
+            if (orderDetail is null)
             {
                 return NotFound();
             }
@@ -98,7 +86,7 @@ namespace Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("OrderDetailsId,OrderId,ProductId,Quantity,Discount")] OrderDetail orderDetail)
+        public async Task<IActionResult> Edit(short id, [Bind("OrderDetailsId,OrderId,ProductId,Quantity,Discount")] OrderDetail orderDetail)
         {
             if (id != orderDetail.OrderDetailsId)
             {
@@ -107,22 +95,14 @@ namespace Controllers
 
             if (ModelState.IsValid)
             {
-                try
+                
+                var updatedOrderDetail = await _orderDetailService.EditOrderDetailAsync(id ,orderDetail);
+
+                if (updatedOrderDetail is null)
                 {
-                    _context.Update(orderDetail);
-                    await _context.SaveChangesAsync();
+                    return NotFound();
                 }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!OrderDetailExists(orderDetail.OrderDetailsId))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+
                 return RedirectToAction(nameof(Index));
             }
             ViewData["OrderId"] = new SelectList(_context.Orders, "OrderId", "OrderId", orderDetail.OrderId);
@@ -131,18 +111,12 @@ namespace Controllers
         }
 
         // GET: OrderDetails/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(short? id)
         {
-            if (id == null || _context.OrderDetails == null)
-            {
-                return NotFound();
-            }
 
-            var orderDetail = await _context.OrderDetails
-                .Include(o => o.Order)
-                .Include(o => o.Product)
-                .FirstOrDefaultAsync(m => m.OrderDetailsId == id);
-            if (orderDetail == null)
+            var orderDetail = await _orderDetailService.findOrderDetailsAsync(id);
+
+            if (orderDetail is null)
             {
                 return NotFound();
             }
@@ -153,25 +127,29 @@ namespace Controllers
         // POST: OrderDetails/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(short id)
         {
-            if (_context.OrderDetails == null)
+
+            var orderDetail = await _orderDetailService.findOrderDetailsAsync(id);
+
+            if (orderDetail is not null)
             {
-                return Problem("Entity set 'SuperStoreContext.OrderDetails'  is null.");
-            }
-            var orderDetail = await _context.OrderDetails.FindAsync(id);
-            if (orderDetail != null)
-            {
-                _context.OrderDetails.Remove(orderDetail);
+                await _orderDetailService.DeleteOrderDetailAsync(id);
             }
 
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool OrderDetailExists(int id)
+        private async Task<bool> OrderDetailExists(short id)
         {
-            return (_context.OrderDetails?.Any(e => e.OrderDetailsId == id)).GetValueOrDefault();
+            var foundRecord = await _orderDetailService.findOrderDetailsAsync(id);
+
+            if(foundRecord is null)
+            {
+                return false;
+            }
+
+            return true;
         }
     }
 }
