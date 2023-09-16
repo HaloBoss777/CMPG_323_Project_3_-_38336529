@@ -25,7 +25,7 @@ namespace Controllers
         // GET: Customers
         public async Task<IActionResult> Index()
         {
-            return Ok(await _customerService.GetAllCustomersAsync());
+            return View(await _customerService.GetAllCustomersAsync());
         }
 
         // GET: Customers/Details/5

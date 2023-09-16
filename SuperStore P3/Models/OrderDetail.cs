@@ -1,23 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
 
 namespace Models
 {
     public partial class OrderDetail
     {
-        [DisplayName("Order Details ID")]
+        [Key]
+        [Column("OrderDetailsID")]
         public short OrderDetailsId { get; set; }
-        [DisplayName("Order ID")]
         public short OrderId { get; set; }
-        [DisplayName("Product ID")]
         public short ProductId { get; set; }
-        [DisplayName("Quantity")]
         public int Quantity { get; set; }
-        [DisplayName("Discount")]
-        public double? Discount { get; set; }
+        public int? Discount { get; set; }
 
+        [ForeignKey("OrderId")]
+        [InverseProperty("OrderDetails")]
         public virtual Order Order { get; set; } = null!;
+        [ForeignKey("ProductId")]
+        [InverseProperty("OrderDetails")]
         public virtual Product Product { get; set; } = null!;
     }
 }

@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
 
 namespace Models
 {
@@ -11,16 +13,15 @@ namespace Models
             OrderDetails = new HashSet<OrderDetail>();
         }
 
-        [DisplayName("Product ID")]
+        [Key]
         public short ProductId { get; set; }
-        [DisplayName("Product Name")]
+        [StringLength(50)]
         public string ProductName { get; set; } = null!;
-        [DisplayName("Product Description")]
+        [StringLength(50)]
         public string? ProductDescription { get; set; }
-        [DisplayName("Units in Stock")]
         public int? UnitsInStock { get; set; }
 
-        [DisplayName("Order Details")]
+        [InverseProperty("Product")]
         public virtual ICollection<OrderDetail> OrderDetails { get; set; }
     }
 }
