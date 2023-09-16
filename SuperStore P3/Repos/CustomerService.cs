@@ -11,8 +11,8 @@ namespace EcoPower_Logistics.Repos
         Task<List<Customer>> GetAllCustomersAsync();
         Task<Customer?> findCustomerAsync(short? id);
         Task<Customer> CreateCustomerAsync(Customer addCustomer);
-        Task<Customer?> EditCustomerAsync(short? id, Customer customer);
-        Task<Customer?> DeleteCustomer(short id);
+        Task<Customer?> EditCustomerAsync(short id, Customer customer);
+        Task<Customer?> DeleteCustomerAsync(short id);
     }
 
     public class CustomerService : ICustomerService
@@ -69,6 +69,7 @@ namespace EcoPower_Logistics.Repos
         //Edit Customer
         public async Task<Customer?> EditCustomerAsync(short id, Customer customer)
         {
+            //Returns normal type so can use the find function
             var foundCustomer = await findCustomerAsync(id);
 
             if(foundCustomer is null)
@@ -89,7 +90,7 @@ namespace EcoPower_Logistics.Repos
         }
 
         //Delete Customer
-        public async Task<Customer?> DeleteCustomer(short id)
+        public async Task<Customer?> DeleteCustomerAsync(short id)
         {
             var foundcustomer = await findCustomerAsync(id);
 

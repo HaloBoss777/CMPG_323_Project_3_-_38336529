@@ -25,22 +25,16 @@ namespace Controllers
         // GET: Products
         public async Task<IActionResult> Index()
         {
-            return _context.Products != null ?
-                        View(await _context.Products.ToListAsync()) :
-                        Problem("Entity set 'SuperStoreContext.Products'  is null.");
+            return Ok(await _productService.GetAllProductsAsync());
         }
 
         // GET: Products/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details(short? id)
         {
-            if (id == null || _context.Products == null)
-            {
-                return NotFound();
-            }
 
-            var product = await _context.Products
-                .FirstOrDefaultAsync(m => m.ProductId == id);
-            if (product == null)
+            var product = await _productService.FindProductAsync(id);
+
+            if (product is null)
             {
                 return NotFound();
             }
@@ -63,26 +57,23 @@ namespace Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(product);
-                await _context.SaveChangesAsync();
+                await _productService.CreateAProductAsync(product);
                 return RedirectToAction(nameof(Index));
             }
             return View(product);
         }
 
         // GET: Products/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(short? id)
         {
-            if (id == null || _context.Products == null)
+            
+            var product = await _productService.FindProductAsync(id);
+
+            if (product is null)
             {
                 return NotFound();
             }
 
-            var product = await _context.Products.FindAsync(id);
-            if (product == null)
-            {
-                return NotFound();
-            }
             return View(product);
         }
 
@@ -91,7 +82,7 @@ namespace Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ProductId,ProductName,ProductDescription,UnitsInStock")] Product product)
+        public async Task<IActionResult> Edit(short id, [Bind("ProductId,ProductName,ProductDescription,UnitsInStock")] Product product)
         {
             if (id != product.ProductId)
             {
@@ -100,38 +91,25 @@ namespace Controllers
 
             if (ModelState.IsValid)
             {
-                try
+                var UpdatedProduct = await _productService.EditProductAsync(id, product);
+
+                if (UpdatedProduct is null) 
                 {
-                    _context.Update(product);
-                    await _context.SaveChangesAsync();
+                    return NotFound();
                 }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!ProductExists(product.ProductId))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+
                 return RedirectToAction(nameof(Index));
             }
             return View(product);
         }
 
         // GET: Products/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(short? id)
         {
-            if (id == null || _context.Products == null)
-            {
-                return NotFound();
-            }
 
-            var product = await _context.Products
-                .FirstOrDefaultAsync(m => m.ProductId == id);
-            if (product == null)
+            var product = await _productService.FindProductAsync(id);
+
+            if (product is null)
             {
                 return NotFound();
             }
@@ -142,25 +120,28 @@ namespace Controllers
         // POST: Products/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(short id)
         {
-            if (_context.Products == null)
+            var FoundProduct = await _productService.FindProductAsync(id);
+
+            if (FoundProduct is not null)
             {
-                return Problem("Entity set 'SuperStoreContext.Products'  is null.");
-            }
-            var product = await _context.Products.FindAsync(id);
-            if (product != null)
-            {
-                _context.Products.Remove(product);
+                await _productService.DeleteProductAsync(id);
             }
 
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool ProductExists(int id)
+        private async Task<bool> ProductExists(short id)
         {
-            return (_context.Products?.Any(e => e.ProductId == id)).GetValueOrDefault();
+            var foundRecord = await _productService.FindProductAsync(id);
+
+            if (foundRecord is null)
+            {
+                return false;
+            }
+
+            return true;
         }
     }
 }

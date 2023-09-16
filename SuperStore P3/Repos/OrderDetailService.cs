@@ -59,7 +59,7 @@ namespace EcoPower_Logistics.Repos
         //Edit OrderDetail
         public async Task<OrderDetail?> EditOrderDetailAsync(short id, OrderDetail orderDetail)
         {
-            //Need base type not wraped in a task so need cannot call find function
+            //Need base type not wraped in a task so cannot call find function
             var foundOrder = await _superStoreContext.OrderDetails.Include(o => o.Order).Include(o => o.Product).FirstOrDefaultAsync(m => m.OrderDetailsId == id);
 
             if (foundOrder is null)

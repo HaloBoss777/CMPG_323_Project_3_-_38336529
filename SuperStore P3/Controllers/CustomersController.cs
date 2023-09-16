@@ -25,7 +25,7 @@ namespace Controllers
         // GET: Customers
         public async Task<IActionResult> Index()
         {
-            return Ok( await _customerService.GetAllCustomersAsync());
+            return Ok(await _customerService.GetAllCustomersAsync());
         }
 
         // GET: Customers/Details/5
@@ -122,7 +122,7 @@ namespace Controllers
 
             if (customer is not null)
             {
-                await _customerService.DeleteCustomer(id);
+                await _customerService.DeleteCustomerAsync(id);
             }
 
             return RedirectToAction(nameof(Index));
