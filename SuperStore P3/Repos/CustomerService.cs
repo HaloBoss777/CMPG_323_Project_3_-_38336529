@@ -67,7 +67,7 @@ namespace EcoPower_Logistics.Repos
         }
 
         //Edit Customer
-        public async Task<Customer?> EditCustomerAsync(short? id, Customer customer)
+        public async Task<Customer?> EditCustomerAsync(short id, Customer customer)
         {
             var foundCustomer = await findCustomerAsync(id);
 

@@ -16,10 +16,12 @@ namespace Controllers
     public class OrderDetailsController : Controller
     {
         private readonly IOrderDetailService _orderDetailService;
+        private readonly IOrderService _orderService;
 
-        public OrderDetailsController(IOrderDetailService OrderDetailService)
+        public OrderDetailsController(IOrderDetailService OrderDetailService, IOrderService orderService)
         {
             _orderDetailService = OrderDetailService;
+            _orderService = orderService;
         }
 
         // GET: OrderDetails
@@ -46,7 +48,7 @@ namespace Controllers
         // GET: OrderDetails/Create
         public IActionResult Create()
         {
-            ViewData["OrderId"] = new SelectList(_context.Orders, "OrderId", "OrderId");
+            ViewData["OrderId"] = new SelectList((System.Collections.IEnumerable)_orderService.GetAllOrdersAsync(), "OrderId", "OrderId");
             ViewData["ProductId"] = new SelectList(_context.Products, "ProductId", "ProductId");
             return View();
         }
@@ -63,7 +65,7 @@ namespace Controllers
                 await _orderDetailService.CreateOrderDetailAsync(orderDetail);
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["OrderId"] = new SelectList(_context.Orders, "OrderId", "OrderId", orderDetail.OrderId);
+            ViewData["OrderId"] = new SelectList((System.Collections.IEnumerable)_orderService.GetAllOrdersAsync(), "OrderId", "OrderId", orderDetail.OrderId);
             ViewData["ProductId"] = new SelectList(_context.Products, "ProductId", "ProductId", orderDetail.ProductId);
             return View(orderDetail);
         }
@@ -76,7 +78,7 @@ namespace Controllers
             {
                 return NotFound();
             }
-            ViewData["OrderId"] = new SelectList(_context.Orders, "OrderId", "OrderId", orderDetail.OrderId);
+            ViewData["OrderId"] = new SelectList((System.Collections.IEnumerable)_orderService.GetAllOrdersAsync(), "OrderId", "OrderId", orderDetail.OrderId);
             ViewData["ProductId"] = new SelectList(_context.Products, "ProductId", "ProductId", orderDetail.ProductId);
             return View(orderDetail);
         }
@@ -105,7 +107,7 @@ namespace Controllers
 
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["OrderId"] = new SelectList(_context.Orders, "OrderId", "OrderId", orderDetail.OrderId);
+            ViewData["OrderId"] = new SelectList((System.Collections.IEnumerable)_orderService.GetAllOrdersAsync(), "OrderId", "OrderId", orderDetail.OrderId);
             ViewData["ProductId"] = new SelectList(_context.Products, "ProductId", "ProductId", orderDetail.ProductId);
             return View(orderDetail);
         }

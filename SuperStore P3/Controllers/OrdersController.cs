@@ -8,37 +8,34 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Models;
 using Data;
+using EcoPower_Logistics.Repos;
 
 namespace Controllers
 {
     [Authorize]
     public class OrdersController : Controller
     {
-        private readonly SuperStoreContext _context;
+        private readonly IOrderService _orderService;
+        private readonly ICustomerService _customerService;
 
-        public OrdersController(SuperStoreContext context)
+        public OrdersController(IOrderService orderService, ICustomerService customerService)
         {
-            _context = context;
+            _orderService = orderService;
+            _customerService = customerService;
         }
 
         // GET: Orders
         public async Task<IActionResult> Index()
         {
-            var superStoreContext = _context.Orders.Include(o => o.Customer);
-            return View(await superStoreContext.ToListAsync());
+            var superStoreContext = await _orderService.GetAllOrdersAsync();
+            return View(superStoreContext);
         }
 
         // GET: Orders/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details(short? id)
         {
-            if (id == null || _context.Orders == null)
-            {
-                return NotFound();
-            }
 
-            var order = await _context.Orders
-                .Include(o => o.Customer)
-                .FirstOrDefaultAsync(m => m.OrderId == id);
+            var order = await _orderService.FindOrderAsync(id);
             if (order == null)
             {
                 return NotFound();
@@ -50,7 +47,7 @@ namespace Controllers
         // GET: Orders/Create
         public IActionResult Create()
         {
-            ViewData["CustomerId"] = new SelectList(_context.Customers, "CustomerId", "CustomerId");
+            ViewData["CustomerId"] = new SelectList((System.Collections.IEnumerable)_customerService.GetAllCustomersAsync(), "CustomerId", "CustomerId");
             return View();
         }
 
@@ -63,28 +60,25 @@ namespace Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(order);
-                await _context.SaveChangesAsync();
+                await _orderService.CreateOrderAsync(order);
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CustomerId"] = new SelectList(_context.Customers, "CustomerId", "CustomerId", order.CustomerId);
+            ViewData["CustomerId"] = new SelectList((System.Collections.IEnumerable)_customerService.GetAllCustomersAsync(), "CustomerId", "CustomerId", order.CustomerId);
             return View(order);
         }
 
         // GET: Orders/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(short? id)
         {
-            if (id == null || _context.Orders == null)
+
+            var order = await _orderService.FindOrderAsync(id);
+
+            if (order is null)
             {
                 return NotFound();
             }
 
-            var order = await _context.Orders.FindAsync(id);
-            if (order == null)
-            {
-                return NotFound();
-            }
-            ViewData["CustomerId"] = new SelectList(_context.Customers, "CustomerId", "CustomerId", order.CustomerId);
+            ViewData["CustomerId"] = new SelectList((System.Collections.IEnumerable)_customerService.GetAllCustomersAsync(), "CustomerId", "CustomerId", order.CustomerId);
             return View(order);
         }
 
@@ -93,7 +87,7 @@ namespace Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("OrderId,OrderDate,CustomerId,DeliveryAddress")] Order order)
+        public async Task<IActionResult> Edit(short id, [Bind("OrderId,OrderDate,CustomerId,DeliveryAddress")] Order order)
         {
             if (id != order.OrderId)
             {
@@ -102,40 +96,26 @@ namespace Controllers
 
             if (ModelState.IsValid)
             {
-                try
+                var UpdatedOrder = await _orderService.EditOrderAsync(id, order);
+
+                if (UpdatedOrder is null)
                 {
-                    _context.Update(order);
-                    await _context.SaveChangesAsync();
+                    return NotFound();
                 }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!OrderExists(order.OrderId))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CustomerId"] = new SelectList(_context.Customers, "CustomerId", "CustomerId", order.CustomerId);
+            ViewData["CustomerId"] = new SelectList((System.Collections.IEnumerable)_customerService.GetAllCustomersAsync(), "CustomerId", "CustomerId", order.CustomerId);
             return View(order);
         }
 
         // GET: Orders/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(short? id)
         {
-            if (id == null || _context.Orders == null)
-            {
-                return NotFound();
-            }
 
-            var order = await _context.Orders
-                .Include(o => o.Customer)
-                .FirstOrDefaultAsync(m => m.OrderId == id);
-            if (order == null)
+            var order = await _orderService.FindOrderAsync(id);
+
+            if (order is null)
             {
                 return NotFound();
             }
@@ -146,25 +126,29 @@ namespace Controllers
         // POST: Orders/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(short id)
         {
-            if (_context.Orders == null)
-            {
-                return Problem("Entity set 'SuperStoreContext.Orders'  is null.");
-            }
-            var order = await _context.Orders.FindAsync(id);
-            if (order != null)
-            {
-                _context.Orders.Remove(order);
-            }
 
-            await _context.SaveChangesAsync();
+            var DeletedRecord = _orderService.DeleteOrderAsync(id);
+
+            if (DeletedRecord is null)
+            {
+                return NotFound();
+            }
+            
             return RedirectToAction(nameof(Index));
         }
 
-        private bool OrderExists(int id)
+        private async Task<bool> OrderExists(short id)
         {
-            return (_context.Orders?.Any(e => e.OrderId == id)).GetValueOrDefault();
+            var foundRecord = await _orderService.FindOrderAsync(id);
+
+            if (foundRecord is null)
+            {
+                return false;
+            }
+
+            return true;
         }
     }
 }
