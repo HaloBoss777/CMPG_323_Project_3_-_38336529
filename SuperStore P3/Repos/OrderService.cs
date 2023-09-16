@@ -26,7 +26,7 @@ namespace EcoPower_Logistics.Repos
         //Get all Orders and The customer of the order
         public async Task<List<Order>> GetAllOrdersAsync()
         {
-            return await _superStoreContext.Orders.Include(o => o.CustomerId).ToListAsync();
+            return await _superStoreContext.Orders.Include(o => o.Customer).ToListAsync();
         }
 
         public async Task<Order?> FindOrderAsync(short? id)
@@ -58,8 +58,7 @@ namespace EcoPower_Logistics.Repos
         //Edit a order
         public async Task<Order?> EditOrderAsync(short id, Order order)
         {
-            //Need base type not wraped in a task so cannot call find function
-            var foundRecord = await _superStoreContext.Orders.Include(o => o.Customer).FirstOrDefaultAsync(m => m.OrderId == id);
+            var foundRecord = await FindOrderAsync(id);
 
             if (foundRecord is null) 
             {

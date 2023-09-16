@@ -18,9 +18,9 @@ namespace Models
 
         [ForeignKey("OrderId")]
         [InverseProperty("OrderDetails")]
-        public virtual Order Order { get; set; } = null!;
+        public virtual Order? Order { get; set; }
         [ForeignKey("ProductId")]
         [InverseProperty("OrderDetails")]
-        public virtual Product Product { get; set; } = null!;
+        public virtual Product? Product { get; set; }
     }
 }

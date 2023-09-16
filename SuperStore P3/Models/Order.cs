@@ -23,7 +23,7 @@ namespace Models
 
         [ForeignKey("CustomerId")]
         [InverseProperty("Orders")]
-        public virtual Customer Customer { get; set; } = null!;
+        public virtual Customer? Customer { get; set; }
         [InverseProperty("Order")]
         public virtual ICollection<OrderDetail> OrderDetails { get; set; }
     }

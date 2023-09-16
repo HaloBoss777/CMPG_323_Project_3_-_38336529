@@ -82,6 +82,8 @@ namespace Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(short id, [Bind("CustomerId,CustomerTitle,CustomerName,CustomerSurname,CellPhone")] Customer customer)
         {
+            var UpdatedCustomer = new Customer();
+
             if (id != customer.CustomerId)
             {
                 return NotFound();
@@ -89,7 +91,7 @@ namespace Controllers
 
             if (ModelState.IsValid)
             {
-                var UpdatedCustomer = await _customerService.EditCustomerAsync(id, customer);
+                UpdatedCustomer = await _customerService.EditCustomerAsync(id, customer);
 
                 if(UpdatedCustomer is null)
                 {
@@ -97,7 +99,7 @@ namespace Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(customer);
+            return View(UpdatedCustomer);
         }
 
         // GET: Customers/Delete/5

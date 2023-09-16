@@ -48,10 +48,10 @@ namespace Controllers
         }
 
         // GET: OrderDetails/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            ViewData["OrderId"] = new SelectList((System.Collections.IEnumerable)_orderService.GetAllOrdersAsync(), "OrderId", "OrderId");
-            ViewData["ProductId"] = new SelectList((System.Collections.IEnumerable)_productService.GetAllProductsAsync(), "ProductId", "ProductId");
+            ViewData["OrderId"] = new SelectList(await _orderService.GetAllOrdersAsync(), "OrderId", "OrderId");
+            ViewData["ProductId"] = new SelectList(await _productService.GetAllProductsAsync(), "ProductId", "ProductId");
             return View();
         }
 
@@ -67,8 +67,8 @@ namespace Controllers
                 await _orderDetailService.CreateOrderDetailAsync(orderDetail);
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["OrderId"] = new SelectList((System.Collections.IEnumerable)_orderService.GetAllOrdersAsync(), "OrderId", "OrderId", orderDetail.OrderId);
-            ViewData["ProductId"] = new SelectList((System.Collections.IEnumerable)_productService.GetAllProductsAsync(), "ProductId", "ProductId", orderDetail.ProductId);
+            ViewData["OrderId"] = new SelectList(await _orderService.GetAllOrdersAsync(), "OrderId", "OrderId", orderDetail.OrderId);
+            ViewData["ProductId"] = new SelectList(await _productService.GetAllProductsAsync(), "ProductId", "ProductId", orderDetail.ProductId);
             return View(orderDetail);
         }
 
@@ -80,8 +80,8 @@ namespace Controllers
             {
                 return NotFound();
             }
-            ViewData["OrderId"] = new SelectList((System.Collections.IEnumerable)_orderService.GetAllOrdersAsync(), "OrderId", "OrderId", orderDetail.OrderId);
-            ViewData["ProductId"] = new SelectList((System.Collections.IEnumerable)_productService.GetAllProductsAsync(), "ProductId", "ProductId", orderDetail.ProductId);
+            ViewData["OrderId"] = new SelectList(await _orderService.GetAllOrdersAsync(), "OrderId", "OrderId", orderDetail.OrderId);
+            ViewData["ProductId"] = new SelectList(await _productService.GetAllProductsAsync(), "ProductId", "ProductId", orderDetail.ProductId);
             return View(orderDetail);
         }
 
@@ -109,8 +109,8 @@ namespace Controllers
 
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["OrderId"] = new SelectList((System.Collections.IEnumerable)_orderService.GetAllOrdersAsync(), "OrderId", "OrderId", orderDetail.OrderId);
-            ViewData["ProductId"] = new SelectList((System.Collections.IEnumerable)_productService.GetAllProductsAsync(), "ProductId", "ProductId", orderDetail.ProductId);
+            ViewData["OrderId"] = new SelectList(await _orderService.GetAllOrdersAsync(), "OrderId", "OrderId", orderDetail.OrderId);
+            ViewData["ProductId"] = new SelectList(await _productService.GetAllProductsAsync(), "ProductId", "ProductId", orderDetail.ProductId);
             return View(orderDetail);
         }
 

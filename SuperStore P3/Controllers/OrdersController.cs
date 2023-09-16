@@ -45,9 +45,9 @@ namespace Controllers
         }
 
         // GET: Orders/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            ViewData["CustomerId"] = new SelectList((System.Collections.IEnumerable)_customerService.GetAllCustomersAsync(), "CustomerId", "CustomerId");
+            ViewData["CustomerId"] = new SelectList(await _customerService.GetAllCustomersAsync(), "CustomerId", "CustomerId");
             return View();
         }
 
@@ -63,7 +63,7 @@ namespace Controllers
                 await _orderService.CreateOrderAsync(order);
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CustomerId"] = new SelectList((System.Collections.IEnumerable)_customerService.GetAllCustomersAsync(), "CustomerId", "CustomerId", order.CustomerId);
+            ViewData["CustomerId"] = new SelectList(await _customerService.GetAllCustomersAsync(), "CustomerId", "CustomerId", order.CustomerId);
             return View(order);
         }
 
@@ -78,7 +78,7 @@ namespace Controllers
                 return NotFound();
             }
 
-            ViewData["CustomerId"] = new SelectList((System.Collections.IEnumerable)_customerService.GetAllCustomersAsync(), "CustomerId", "CustomerId", order.CustomerId);
+            ViewData["CustomerId"] = new SelectList(await _customerService.GetAllCustomersAsync(), "CustomerId", "CustomerId", order.CustomerId);
             return View(order);
         }
 
@@ -105,7 +105,7 @@ namespace Controllers
 
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CustomerId"] = new SelectList((System.Collections.IEnumerable)_customerService.GetAllCustomersAsync(), "CustomerId", "CustomerId", order.CustomerId);
+            ViewData["CustomerId"] = new SelectList(await _customerService.GetAllCustomersAsync(), "CustomerId", "CustomerId", order.CustomerId);
             return View(order);
         }
 
@@ -129,7 +129,7 @@ namespace Controllers
         public async Task<IActionResult> DeleteConfirmed(short id)
         {
 
-            var DeletedRecord = _orderService.DeleteOrderAsync(id);
+            var DeletedRecord = await _orderService.DeleteOrderAsync(id);
 
             if (DeletedRecord is null)
             {
