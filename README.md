@@ -15,37 +15,37 @@
 <p>The api can be used by calling the appropriate endpoints and providing the necessary data each endpoint needs to function.</p>
 
 <h2>Login/Register Screen<h2>
-<img src="/Images/1Screen.png" alt="Login/Register Screen">
+<img src="/Images/1Screen.png" alt="Login/Register Screen"></img>
 <p>In this view you can login or register to start using the API on the website</p>
 
 <h2>Register Screen<h2>
-<img src="/Images/Regz.png" alt="Register Screen">
+<img src="/Images/Regz.png" alt="Register Screen"></img>
 <p>In this view you can register with a Email and a password and confirm your account</p>
 <img src="/Images/ConfirmAccount.png" alt="Confirm Screen">
 <p>After confirmation you can navigate to login to start using the API on the website</p>
 
 <h2>Login Screen<h2>
-<img src="/Images/Log.png" alt="Login Screen">
+<img src="/Images/Log.png" alt="Login Screen"></img>
 <p>In this view you can login with you email and password to start using the API on the website</p>
 
 <h2>Options to choose<h2>
-<img src="/Images/More_Options.png" alt="More Options Screen">
+<img src="/Images/More_Options.png" alt="More Options Screen"></img>
 <p>In this view you can Select which data to view in the database</p>
 
 <h2>Customer View<h2>
-<img src="/Images/Cus.png" alt="Customer Operations View">
+<img src="/Images/Cus.png" alt="Customer Operations View"></img>
 <p>In this view you can preform Create, Read, Update and Delete operations on the customer data</p>
 
 <h2>Orders View<h2>
-<img src="/Images/Order.png" alt="Order Operations View">
+<img src="/Images/Order.png" alt="Order Operations View"></img>
 <p>In this view you can preform Create, Read, Update and Delete operations on the Order data</p>
 
 <h2>Product View<h2>
-<img src="/Images/Product.png" alt="Product Operations View">
+<img src="/Images/Product.png" alt="Product Operations View"></img>
 <p>In this view you can preform Create, Read, Update and Delete operations on the Product data</p>
 
 <h2>Order Details View<h2>
-<img src="/Images/OrderD.png" alt="Order Details Operations View">
+<img src="/Images/OrderD.png" alt="Order Details Operations View"></img>
 <p>In this view you can preform Create, Read, Update and Delete operations on the Order Details data</p>
 
 <h2>References:</h2>
